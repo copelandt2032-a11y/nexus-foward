@@ -1,117 +1,108 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NexusForward // Frontend Gateway</title>
-    <link rel="stylesheet" href="style.css">
+<head><meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NexusForward // Frontend Gateway</title><style>
+        :root {
+            --bg: #0a0a0c;
+            --accent: #00ffcc;
+            --text: #f0f0f3;
+        }
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;}
+        .container {
+            text-align: center;
+            border: 1px solid #222;
+            padding: 40px;
+            background: #111115;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.05);
+            max-width: 500px;
+            width: 100%;}
+        h1 {
+            font-size: 2.2rem;
+            letter-spacing: 4px;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+        .subtitle {
+            color: var(--accent);
+            font-size: 0.9rem;
+            margin-bottom: 30px;text-transform: uppercase;
+        }
+        input[type="text"] {
+            background: #1a1a24;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 15px;
+            width: 70%;
+            border-radius: 4px;outline: none;
+            font-size: 1rem;
+        }
+        input[type="text"]:focus { border-color: var(--accent); }
+        button {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 15px 20px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+        #responseContainer {
+            margin-top: 25px;
+            text-align: left;
+            background: #050507;
+            padding: 15px;
+            border-left: 3px solid var(--accent);
+            max-height: 200px;
+            overflow-y: auto;
+        }.hidden { display: none; }
+        pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; font-size: 0.85rem; }
+    </style>
 </head>
 <body>
-
     <div class="container">
-        <h1>NEXUS//FORWARD</h1>
-        <div class="subtitle">Direct Web Request Tool</div>
-        
+        <h1>NEXUS//FORWARD</h1> <div class="subtitle">Direct Web Request Tool</div>
+
         <input type="text" id="urlInput" placeholder="Enter target URL (e.g., https://api.github.com)">
         <button id="forwardBtn">FORWARD</button>
 
         <div id="responseContainer" class="hidden">
             <h3>Response Log:</h3>
-            <pre id="output">Awaiting uplink...</pre>
-        </div>
+            <pre id="output">Awaiting uplink...</pre> </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        document.getElementById('forwardBtn').addEventListener('click', async () => {
+            const input = document.getElementById('urlInput').value;
+            const output = document.getElementById('output');
+            const container = document.getElementById('responseContainer');
+if (!input) return alert('Please enter a URL');
+ container.classList.remove('hidden');
+            output.textContent = 'Connecting to node...'; try {
+                const response = await fetch(input);
+                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+                const text = await response.text();
+                try { // try to pretty-print JSON when possible
+                    const data = JSON.parse(text);
+                    output.textContent = JSON.stringify(data, null, 2);
+                } catch {
+                    output.textContent = text;
+                }
+            } catch (error) {
+                output.textContent = `Connection Refused: This API or site blocked direct browser access (CORS policy), or the URL is invalid.\n\nDetails: ${error.message}`;
+            }
+        });
+    </script>
 </body>
-</html>:root {
-    --bg: #0a0a0c;
-    --accent: #00ffcc;
-    --text: #f0f0f3;
-}
-body {
-    background-color: var(--bg);
-    color: var(--text);
-    font-family: 'Courier New', Courier, monospace;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-}
-.container {
-    text-align: center;
-    border: 1px solid #222;
-    padding: 40px;
-    background: #111115;
-    border-radius: 8px;
-    box-shadow: 0 0 30px rgba(0, 255, 204, 0.05);
-    max-width: 500px;
-    width: 100%;
-}
-h1 {
-    font-size: 2.2rem;
-    letter-spacing: 4px;
-    margin-bottom: 5px;
-    color: #fff;
-}
-.subtitle {
-    color: var(--accent);
-    font-size: 0.9rem;
-    margin-bottom: 30px;
-    text-transform: uppercase;
-}
-input[type="text"] {
-    background: #1a1a24;
-    border: 1px solid #333;
-    color: #fff;
-    padding: 15px;
-    width: 70%;
-    border-radius: 4px;
-    outline: none;
-    font-size: 1rem;
-}
-input[type="text"]:focus {
-    border-color: var(--accent);
-}
-button {
-    background: var(--accent);
-    color: #000;
-    border: none;
-    padding: 15px 20px;
-    font-size: 1rem;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 4px;
-}
-#responseContainer {
-    margin-top: 25px;
-    text-align: left;
-    background: #050507;
-    padding: 15px;
-    border-left: 3px solid var(--accent);
-    max-height: 200px;
-    overflow-y: auto;
-}
-.hidden { display: none; }
-pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; font-size: 0.85rem;}document.getElementById('forwardBtn').addEventListener('click', async () => {
-    const input = document.getElementById('urlInput').value;
-    const output = document.getElementById('output');
-    const container = document.getElementById('responseContainer');
-
-    if (!input) return alert('Please enter a URL');
-
-    container.classList.remove('hidden');
-    output.textContent = "Connecting to node...";
-
-    try {
-        // Fetch data directly using JavaScript
-        const response = await fetch(input);
-        
-        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-        
-        const data = await response.json();
-        output.textContent = JSON.stringify(data, null, 2);
-    } catch (error) {
-        output.textContent = `Connection Refused: This API or site blocked direct browser access (CORS policy), or the URL is invalid.\n\nDetails: ${error.message}`;
-    }
-});
+</html>
