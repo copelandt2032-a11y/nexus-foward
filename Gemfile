@@ -1,0 +1,10 @@
+source 'https://rubygems.org'
+
+gem 'rack'
+gem 'puma'
+gem 'faye-websocket'
+gem 'json'
+gem 'jwt'
+gem 'bcrypt'
+gem 'sequel'
+gem 'sqlite3'
